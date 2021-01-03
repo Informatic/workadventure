@@ -243,6 +243,9 @@ export class MenuScene extends Phaser.Scene {
             case 'editGameSettingsButton':
                 this.openGameSettingsMenu();
                 break;
+            case 'showJoystick':
+                this.showJoystick();
+                break;
             case 'adminConsoleButton':
                 gameManager.getCurrentGameScene(this).ConsoleGlobalMessageManager.activeMessageConsole();
                 break;
@@ -279,5 +282,22 @@ export class MenuScene extends Phaser.Scene {
         this.closeGameQualityMenu();
         this.closeGameShare();
         this.menuButton.getChildByID('openMenuButton').innerHTML = `<img src="/static/images/menu.svg">`;
+    }
+
+    private showJoystick() {
+        const gameScene = gameManager.getCurrentGameScene(this)
+        if (gameScene?.virtualJoystick) {
+            const joystickVisible = !gameScene.virtualJoystick.visible
+            gameScene.virtualJoystick.visible = joystickVisible
+            localUserStore.setJoystick(joystickVisible)
+        }
+        const body = document.querySelector('body')
+        if (body) {
+            if (document.fullscreenElement ?? document.fullscreen) {
+                document.exitFullscreen()
+            } else {
+                body.requestFullscreen();
+            }
+        }
     }
 }

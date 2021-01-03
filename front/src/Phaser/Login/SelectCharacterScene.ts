@@ -31,7 +31,9 @@ export class SelectCharacterScene extends ResizableScene {
     private selectedRectangleXPos = 0; // Number of the character selected in the rows
     private selectedRectangleYPos = 0; // Number of the character selected in the columns
     private selectedPlayer!: Phaser.Physics.Arcade.Sprite|null; // null if we are selecting the "customize" option
-    private players: Array<Phaser.Physics.Arcade.Sprite> = new Array<Phaser.Physics.Arcade.Sprite>();
+	private players: Array<Phaser.Physics.Arcade.Sprite> = new Array<Phaser.Physics.Arcade.Sprite>();
+
+	private mobileTapRectangle!: Rectangle;
 
     constructor() {
         super({
@@ -59,7 +61,21 @@ export class SelectCharacterScene extends ResizableScene {
     create() {
         this.textField = new TextField(this, this.game.renderer.width / 2, 50, 'Select your character');
 
-        this.pressReturnField = new TextField(this, this.game.renderer.width / 2, 256, 'Press enter to start');
+        this.pressReturnField = new TextField(this, this.game.renderer.width / 2, 280, 'Touch here\n\n or \n\nPress enter to start\n ');
+
+
+        // For mobile purposes - we need a big enough touchable area.
+        this.mobileTapRectangle = this.add
+          .rectangle(
+            this.game.renderer.width / 2,
+            275,
+            this.game.renderer.width / 2,
+            50,
+          )
+          .setInteractive()
+          .on("pointerdown", () => {
+            this.nextScene();
+          });
 
         const rectangleXStart = this.game.renderer.width / 2 - (this.nbCharactersPerRow / 2) * 32 + 16;
 
@@ -99,7 +115,7 @@ export class SelectCharacterScene extends ResizableScene {
 
         /*create user*/
         this.createCurrentPlayer();
-        
+
         const playerNumber = localUserStore.getPlayerCharacterIndex();
         if (playerNumber && playerNumber !== -1) {
             this.selectedRectangleXPos = playerNumber % this.nbCharactersPerRow;
@@ -205,7 +221,8 @@ export class SelectCharacterScene extends ResizableScene {
 
     public onResize(ev: UIEvent): void {
         this.textField.x = this.game.renderer.width / 2;
-        this.pressReturnField.x = this.game.renderer.width / 2;
+		this.pressReturnField.x = this.game.renderer.width / 2;
+		this.mobileTapRectangle.x = this.game.renderer.width / 2;
         this.logo.x = this.game.renderer.width - 30;
         this.logo.y = this.game.renderer.height - 20;
         this.customizeButton.x = this.game.renderer.width / 2;
