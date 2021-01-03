@@ -26,7 +26,7 @@ services:
       JITSI_PRIVATE_MODE: "$JITSI_PRIVATE_MODE"
       HOST: "0.0.0.0"
       NODE_ENV: development
-      API_URL: pusher.${BASE_DOMAIN:-workadventure.localhost}
+      API_URL: play.${BASE_DOMAIN:-workadventure.localhost}
       UPLOADER_URL: uploader.${BASE_DOMAIN:-workadventure.localhost}
       ADMIN_URL: admin.${BASE_DOMAIN:-workadventure.localhost}
       STARTUP_COMMAND_1: yarn install
@@ -62,10 +62,10 @@ services:
     volumes:
       - ./pusher:/usr/src/app
     labels:
-      - "traefik.http.routers.pusher.rule=Host(`pusher.${BASE_DOMAIN:-workadventure.localhost}`)"
+      - "traefik.http.routers.pusher.rule=Host(`pusher.${BASE_DOMAIN:-workadventure.localhost}`) || Path(`/room`) || Path(`/verify`) || Path(`/anonymLogin`)"
       - "traefik.http.routers.pusher.entryPoints=web"
       - "traefik.http.services.pusher.loadbalancer.server.port=8080"
-      - "traefik.http.routers.pusher-ssl.rule=Host(`pusher.${BASE_DOMAIN:-workadventure.localhost}`)"
+      - "traefik.http.routers.pusher-ssl.rule=Host(`pusher.${BASE_DOMAIN:-workadventure.localhost}`) || Path(`/room`) || Path(`/verify`) || Path(`/anonymLogin`)"
       - "traefik.http.routers.pusher-ssl.entryPoints=websecure"
       - "traefik.http.routers.pusher-ssl.tls=true"
       - "traefik.http.routers.pusher-ssl.service=pusher"
